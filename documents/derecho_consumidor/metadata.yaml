@@ -17,14 +17,6 @@ metadata_fields:
     type: "string"
 
 documents:
-  - file: "Ley-19496_07-MAR-1997.pdf"
-    metadata:
-      law_number: "19496"
-      date_enacted: "1997-03-07"
-      category: "Protección al Consumidor"
-      authority: "Congreso Nacional"
-      title: "Ley sobre protección de los derechos de los consumidores"
-      
   - file: "Ley-21081_13-SEP-2018.pdf"
     metadata:
       law_number: "21081"
@@ -32,3 +24,11 @@ documents:
       category: "Protección al Consumidor"
       authority: "Congreso Nacional"
       title: "Ley que perfecciona la protección de los derechos de los consumidores"
+
+  # - file: "Ley-19496_07-MAR-1997.pdf"
+  #   metadata:
+  #     law_number: "19496"
+  #     date_enacted: "1997-03-07"
+  #     category: "Protección al Consumidor"
+  #     authority: "Congreso Nacional"
+  #     title: "Ley sobre protección de los derechos de los consumidores"

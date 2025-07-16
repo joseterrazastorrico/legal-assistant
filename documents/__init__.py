@@ -22,7 +22,9 @@ from .utils import (
     create_metadata_template,
     validate_metadata_file,
     rebuild_collection,
-    get_document_preview
+    get_document_preview,
+    create_example_metadata,
+    validate_existing_metadata
 )
 
 __all__ = [
@@ -35,5 +37,7 @@ __all__ = [
     'create_metadata_template',
     'validate_metadata_file',
     'rebuild_collection',
-    'get_document_preview'
+    'get_document_preview',
+    'create_example_metadata',
+    'validate_existing_metadata',
 ]

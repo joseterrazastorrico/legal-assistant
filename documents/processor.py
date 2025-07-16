@@ -202,6 +202,9 @@ class DocumentProcessor:
                 **doc_metadata,
                 **chunk.metadata
             }
+            # print(f"Doc Metadata: {doc_metadata}")
+            # print(f"Chunk metadata: {chunk_metadata}")
+            
             
             texts.append(chunk.page_content)
             metadatas.append(chunk_metadata)

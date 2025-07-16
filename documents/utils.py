@@ -4,7 +4,7 @@ Utility functions for document processing.
 
 from pathlib import Path
 from typing import List, Dict, Any, Optional
-from documents.processor import DocumentProcessor, create_document_processor
+from documents.processor import create_document_processor
 from logger.logger import get_logger
 
 logger = get_logger("document_utils")
@@ -164,7 +164,7 @@ def validate_metadata_file(metadata_path: str) -> Dict[str, Any]:
         # Load metadata
         with open(metadata_file, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
-        
+        print(data)
         # Check required fields
         required_fields = ['collection_name', 'documents']
         for field in required_fields:
@@ -174,31 +174,35 @@ def validate_metadata_file(metadata_path: str) -> Dict[str, Any]:
         
         # Check if documents exist
         if 'documents' in data:
-            for doc in data['documents']:
-                if 'file' not in doc:
-                    validation_results['errors'].append("Document entry missing 'file' field")
-                    validation_results['valid'] = False
-                    continue
+            if data['documents'] is None:
+                validation_results['errors'].append("Data without documents")
+                validation_results['valid'] = False
+            else:
+                for doc in data['documents']:
+                    if 'file' not in doc:
+                        validation_results['errors'].append("Document entry missing 'file' field")
+                        validation_results['valid'] = False
+                        continue
+                    
+                    file_path = folder_path / doc['file']
+                    validation_results['file_check'][doc['file']] = {
+                        'exists': file_path.exists(),
+                        'is_pdf': file_path.suffix.lower() == '.pdf'
+                    }
+                    
+                    if not file_path.exists():
+                        validation_results['errors'].append(f"File not found: {doc['file']}")
+                        validation_results['valid'] = False
+                    elif not file_path.suffix.lower() == '.pdf':
+                        validation_results['warnings'].append(f"File is not a PDF: {doc['file']}")
+            
+                # Check for orphaned PDF files
+                pdf_files = set(f.name for f in folder_path.glob("*.pdf"))
+                metadata_files = set(doc['file'] for doc in data.get('documents', []))
                 
-                file_path = folder_path / doc['file']
-                validation_results['file_check'][doc['file']] = {
-                    'exists': file_path.exists(),
-                    'is_pdf': file_path.suffix.lower() == '.pdf'
-                }
-                
-                if not file_path.exists():
-                    validation_results['errors'].append(f"File not found: {doc['file']}")
-                    validation_results['valid'] = False
-                elif not file_path.suffix.lower() == '.pdf':
-                    validation_results['warnings'].append(f"File is not a PDF: {doc['file']}")
-        
-        # Check for orphaned PDF files
-        pdf_files = set(f.name for f in folder_path.glob("*.pdf"))
-        metadata_files = set(doc['file'] for doc in data.get('documents', []))
-        
-        orphaned_files = pdf_files - metadata_files
-        if orphaned_files:
-            validation_results['warnings'].append(f"PDF files not in metadata: {list(orphaned_files)}")
+                orphaned_files = pdf_files - metadata_files
+                if orphaned_files:
+                    validation_results['warnings'].append(f"PDF files not in metadata: {list(orphaned_files)}")
         
     except Exception as e:
         validation_results['valid'] = False
@@ -268,7 +272,6 @@ def get_document_preview(collection_name: str,
     processor = create_document_processor(chroma_db_path=chroma_db_path)
     
     try:
-        import chromadb
         collection = processor.chroma_client.get_collection(
             name=collection_name,
             embedding_function=processor._get_embedding_function()
@@ -290,3 +293,49 @@ def get_document_preview(collection_name: str,
         logger.error(f"Error getting document preview: {e}")
     
     return None
+
+## TESTING FUNCTIONS
+def create_example_metadata():
+    """Create example metadata for testing."""
+    print("Creating example metadata template...")
+    
+    # Create a test folder structure
+    test_folder = Path("./documents/test_collection")
+    test_folder.mkdir(exist_ok=True)
+    
+    # Create metadata template
+    metadata_file = create_metadata_template(
+        folder_path=str(test_folder),
+        collection_name="test_collection",
+        description="Test collection for demonstration"
+    )
+    
+    print(f"Created metadata template: {metadata_file}")
+    
+    # Validate the metadata
+    validation = validate_metadata_file(metadata_file)
+    print(f"Validation results: {validation}")
+
+def validate_existing_metadata():
+    """Validate existing metadata files."""
+    print("Validating existing metadata files...")
+    
+    documents_root = Path("./documents")
+    
+    for folder_path in documents_root.iterdir():
+        if folder_path.is_dir():
+            metadata_file = folder_path / "metadata.yaml"
+            if metadata_file.exists():
+                print(f"\nValidating: {metadata_file}")
+                validation = validate_metadata_file(str(metadata_file))
+                
+                if validation['valid']:
+                    print("   ✓ Valid")
+                else:
+                    print("   ✗ Invalid")
+                    for error in validation['errors']:
+                        print(f"     Error: {error}")
+                
+                if validation['warnings']:
+                    for warning in validation['warnings']:
+                        print(f"     Warning: {warning}")

@@ -1,0 +1,19 @@
+collection_name: "test_collection"
+description: "Test collection for demonstration"
+chunk_size: 1000
+chunk_overlap: 200
+metadata_fields:
+  - field: "document_type"
+    description: "Type of document"
+    type: "string"
+  - field: "date_created"
+    description: "Date the document was created"
+    type: "date"
+  - field: "category"
+    description: "Document category"
+    type: "string"
+  - field: "author"
+    description: "Document author"
+    type: "string"
+
+documents:

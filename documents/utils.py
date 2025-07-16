@@ -339,3 +339,19 @@ def validate_existing_metadata():
                 if validation['warnings']:
                     for warning in validation['warnings']:
                         print(f"     Warning: {warning}")
+
+def extract_collection_definitions():
+    """
+    Extract collection definitions for the rag_agent_prompt.
+    
+    Returns:
+        String with collection definitions formatted for the prompt.
+    """
+    logger.info("Extracting collection definitions...")
+
+    collections = list_available_collections()
+    collection_definitions = {collection: get_collection_statistics(collection)\
+                            .get('metadata', {}).get('description', 'N/A') \
+                                for collection in collections}
+    collection_definitions = '\n'.join([f'{k}: {v}' for k,v in collection_definitions.items()])
+    return collection_definitions

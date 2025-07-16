@@ -24,7 +24,8 @@ from .utils import (
     rebuild_collection,
     get_document_preview,
     create_example_metadata,
-    validate_existing_metadata
+    validate_existing_metadata,
+    extract_collection_definitions
 )
 
 __all__ = [
@@ -40,4 +41,5 @@ __all__ = [
     'get_document_preview',
     'create_example_metadata',
     'validate_existing_metadata',
+    'extract_collection_definitions'
 ]

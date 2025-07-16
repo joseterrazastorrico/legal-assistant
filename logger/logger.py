@@ -2,7 +2,6 @@
 Logging configuration for the Legal Assistant system.
 """
 
-import os
 import sys
 import logging
 from typing import Optional

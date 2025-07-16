@@ -12,4 +12,4 @@ langchain-google-genai
 python-dotenv
 langgraph
 langgraph-supervisor
-
+langsmith

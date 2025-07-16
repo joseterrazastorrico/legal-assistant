@@ -211,3 +211,6 @@ __marimo__/
 chroma_db/
 #  ChromaDB settings file
 chroma_settings.yaml
+
+#PDF files
+*.pdf

@@ -1,6 +1,6 @@
 collection_name: "derecho_consumidor"
 description: "Leyes y normativas sobre derecho del consumidor en Chile"
-chunk_size: 1000
+chunk_size: 2000
 chunk_overlap: 200
 metadata_fields:
   - field: "law_number"

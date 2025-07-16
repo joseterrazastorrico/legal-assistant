@@ -77,8 +77,9 @@ class DocumentProcessor:
         self.chroma_client = chromadb.PersistentClient(
             path=str(self.chroma_db_path),
             settings=Settings(anonymized_telemetry=False,
-                            allow_reset=True,
-                            is_persistent=True )
+                            # allow_reset=True,
+                            # is_persistent=True
+                            )
             )
         
         # Initialize text splitter (will be configured per collection)
@@ -185,7 +186,6 @@ class DocumentProcessor:
         for i, chunk in enumerate(chunks):
             # Extract source file from chunk metadata
             source_file = Path(chunk.metadata.get('source', '')).name
-            
             # Find document metadata for this file
             doc_metadata = {}
             for doc in config.documents:
@@ -207,6 +207,7 @@ class DocumentProcessor:
             metadatas.append(chunk_metadata)
             ids.append(f"{config.collection_name}_{source_file}_{i}")
         
+        self.logger.info(f"Adding {len(chunks)} chunks to collection {config.collection_name}")
         # Add to collection
         collection.add(
             documents=texts,
@@ -296,10 +297,12 @@ class DocumentProcessor:
     def get_collection_info(self, collection_name: str) -> Dict[str, Any]:
         """Get information about a specific collection."""
         try:
+            self.logger.info(f"Getting info for collection: {collection_name}")
             collection = self.chroma_client.get_collection(
                 name=collection_name,
-                embedding_function=self._get_embedding_function()
+                # embedding_function=self._get_embedding_function()
             )
+            self.logger.info(f"Collection {collection_name} found with {collection.count()} documents")
             
             count = collection.count()
             return {
@@ -315,16 +318,21 @@ class DocumentProcessor:
                         n_results: int = 5) -> List[Dict[str, Any]]:
         """Search documents in a specific collection."""
         try:
+            self.logger.info(f"Searching in collection: {collection_name} with query: {query}")
             collection = self.chroma_client.get_collection(
                 name=collection_name,
-                embedding_function=self._get_embedding_function()
+                # embedding_function=self._get_embedding_function()
             )
-            
+            self.logger.info(f"Collection {collection_name} found with {collection.count()} documents")
+            query_embeded = self.embedding_model.embed_query(query)
+            self.logger.info(f"Query embedded with {len(query_embeded)} dimensions")
             results = collection.query(
-                query_texts=[query],
+                # query_texts=[query],
+                query_embeddings=[query_embeded],
                 n_results=n_results,
                 include=['documents', 'metadatas', 'distances']
             )
+            self.logger.info(f"Found {len(results['documents'][0])} results in collection {collection_name}")
             
             # Format results
             formatted_results = []
@@ -334,6 +342,7 @@ class DocumentProcessor:
                     'metadata': results['metadatas'][0][i],
                     'distance': results['distances'][0][i]
                 })
+            self.logger.info(f"Search completed with {len(formatted_results)} results")
             
             return formatted_results
             

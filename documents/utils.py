@@ -4,7 +4,7 @@ Utility functions for document processing.
 
 from pathlib import Path
 from typing import List, Dict, Any, Optional
-from documents.processor import create_document_processor
+from documents.processor import DocumentProcessor, create_document_processor
 from logger.logger import get_logger
 
 logger = get_logger("document_utils")
@@ -268,6 +268,7 @@ def get_document_preview(collection_name: str,
     processor = create_document_processor(chroma_db_path=chroma_db_path)
     
     try:
+        import chromadb
         collection = processor.chroma_client.get_collection(
             name=collection_name,
             embedding_function=processor._get_embedding_function()

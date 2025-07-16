@@ -1,15 +1,16 @@
 from langchain_core.tools import tool
 from documents.utils import search_in_collection
 from config.settings import constants
+from typing import Literal
 
+rag_collections_literal = tuple(constants.RAG_COLLECTIONS)
 @tool("retrieve_data", return_direct=False)
 def retrieve_data(
     query: str,
-    collection_name: str,
-    n_results: int = constants.RAG_N_RESULTS,
+    collection_name: Literal[rag_collections_literal],
 ) -> str:
     """Extracts relevant data from a collection based on the query."""
-    results = search_in_collection(collection_name, query, n_results=n_results)
+    results = search_in_collection(collection_name, query, n_results=constants.RAG_N_RESULTS)
     outputs = []
     for result in results:
         if result['distance'] > constants.RAG_TRESHOLD_DISTANCES:

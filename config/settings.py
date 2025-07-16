@@ -1,10 +1,11 @@
 from typing import Literal
 from pydantic import BaseModel
+import os
 
 
 class LoggingConfig(BaseModel):
     """Configuration for logging."""
-    level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
+    level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = os.environ['LOG_LEVEL'] if 'LOG_LEVEL' in os.environ else "INFO"
     format: Literal["structured", "simple"] = "structured"
     file: str = "./logs/legal_assistant.log"
 
@@ -17,5 +18,9 @@ class Constants(BaseModel):
     RAG_N_RESULTS: int = 3
     RAG_EXTRACTED_METADATA: bool = False
     RAG_EXTRACTED_METADATA_KEYS: list[str] = ["source", "page_label"]
+
+    RAG_COLLECTIONS: list[str] = [
+        "derecho_consumidor",
+        ]
 
 constants = Constants()

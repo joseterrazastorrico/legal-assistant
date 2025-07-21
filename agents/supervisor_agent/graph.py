@@ -1,5 +1,6 @@
 #AGENTS
-from agents.action_agent.graph import action_agent
+from agents.legal_knowledge_agent.graph import retriever_agent
+from agents.writing_agent.graph import workflow as writing_agent
 
 #SUPERVISOR
 from langgraph_supervisor import create_supervisor
@@ -9,7 +10,7 @@ from agents.execution_supervisor_agent.state import ExecutorState
 
 
 workflow = create_supervisor(
-    agents=[action_agent],
+    agents=[retriever_agent, writing_agent],
     tools=[],
     model=model,
     prompt=supervisor_prompt,

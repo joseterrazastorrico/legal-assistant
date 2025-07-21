@@ -1,44 +1,35 @@
 from langchain_core.prompts import ChatPromptTemplate
 
 plan_template = """
-I need you to help me break down the following long-form writing instruction into multiple subtasks. Each subtask will guide the writing of one paragraph in the essay, and should include the main points and word count requirements for that paragraph.
+Necesito tu ayuda para descomponer la siguiente instrucción de escritura en subtareas. Cada subtarea guiará la redacción de un párrafo en el ensayo, e incluirá los puntos principales y los requisitos de recuento de palabras para ese párrafo.
 
-The writing instruction is as follows:
-
-{intructions}
-
-Please break it down in the following format, with each subtask taking up one line:
-
-Paragraph 1 - Main Point: [Describe the main point of the paragraph, in detail] - Word Count: [Word count requirement, e.g., 400 words]
-
-Paragraph 2 - Main Point: [Describe the main point of the paragraph, in detail] - Word Count: [word count requirement, e.g. 1000 words].
-
+Por favor, descompónlo en el siguiente formato, con cada subtarea ocupando una línea:
+Párrafo 1 - Punto Principal: [Describe el punto principal del párrafo, en detalle] - Recuento de Palabras: [Requisito de recuento de palabras, por ejemplo, 400 palabras]
+Párrafo 2 - Punto Principal: [Describe el punto principal del párrafo, en detalle] - Recuento de Palabras: [requisito de recuento de palabras, por ejemplo, 1000 palabras].
 ...
 
-Make sure that each subtask is clear and specific, and that all subtasks cover the entire content of the writing instruction. Do not split the subtasks too finely; each subtask's paragraph should be no less than 200 words and no more than 1000 words. Do not output any other content. As this is an ongoing work, omit open-ended conclusions or other rhetorical hooks.
+Asegúrate de que cada subtarea sea clara y específica, y que todas las subtareas cubran todo el contenido de la instrucción de escritura. No dividas demasiado las subtareas; el párrafo de cada subtarea no debe tener menos de 200 palabras ni más de 1000 palabras. No salgas con ninguna otra conclusión abierta o ganchos retóricos.
+No salgas con ningún otro contenido. Como este es un trabajo en curso, omite conclusiones abiertas u otros ganchos retóricos.
 """
-plan_prompt = ChatPromptTemplate([
-    ('system', plan_template)
+plan_prompt = ChatPromptTemplate.from_messages([
+    ('system', plan_template),
+    ('human', "Utiliza el siguiente texto: {instructions}"),
     ])
 
+
 write_template = """
-You are an excellent writing assistant. I will give you an original writing instruction and my planned writing steps. I will also provide you with the text I have already written. Please help me continue writing the next paragraph based on the writing instruction, writing steps, and the already written text.
+Eres un excelente asistente de escritura. Te proporcionaré una instrucción de escritura original y mis pasos de escritura planeados. También te proporcionaré el texto que ya he escrito. Por favor, ayúdame a continuar escribiendo el siguiente párrafo basado en la instrucción de escritura, los pasos de escritura y el texto ya escrito.
 
-Writing instruction:
-
-{intructions}
-
-Writing steps:
-
+Paso de escritura:
 {plan}
 
-Already written text:
-
+Texto ya escrito:
 {text}
 
-Please integrate the original writing instruction, writing steps, and the already written text, and now continue writing {STEP}. If needed, you can add a small subtitle at the beginning. Remember to only output the paragraph you write, without repeating the already written text.
+Por favor, integra la instrucción de escritura original, los pasos de escritura y el texto ya escrito, y continúa escribiendo {STEP}. Si es necesario, puedes agregar un pequeño subtítulo al principio. Recuerda que solo debes outputear el párrafo que escribas, sin repetir el texto ya escrito.
 """
 
-write_prompt = ChatPromptTemplate([
-    ('system', write_template)
+write_prompt = ChatPromptTemplate.from_messages([
+    ('system', write_template),
+    ('human', "Sigue la siguiente instrucción: {instructions}"),
     ])

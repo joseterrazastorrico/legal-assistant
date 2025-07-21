@@ -18,4 +18,4 @@ class WritingState(TypedDict):
     final_doc : str
     write_steps : List[str]
     word_count : int
-    llm_name : str
+    llm_name : str = 'GEMINI'

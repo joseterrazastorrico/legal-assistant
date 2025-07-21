@@ -1,7 +1,4 @@
-from langchain.schema import Document
 from langgraph.graph import StateGraph, END
-from typing_extensions import TypedDict
-from typing import List
 
 from agents.writing_agent.state import WritingState
 from agents.writing_agent.nodes import planning_node

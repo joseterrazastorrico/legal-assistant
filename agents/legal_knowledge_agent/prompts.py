@@ -1,4 +1,4 @@
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
 
 system_prompt = """
 Eres un asistente legal especializado que utiliza únicamente información verificada de documentos legales.

@@ -1,7 +1,4 @@
-from langchain.schema import Document
-import os
-from typing import Any, Dict
-from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
+from langchain_core.output_parsers import StrOutputParser
 
 from agents.llm import model
 from agents.writing_agent.utils import write_markdown_file, count_words
@@ -20,7 +17,7 @@ def planning_node(state):
     num_steps += 1
     logger.info(f"Planning writing with initial prompt: {initial_prompt}")
     plan = plan_chain.invoke({"instructions": initial_prompt})
-    logger.info(f"Generated plan")
+    logger.info("Generated plan")
     return {"plan": plan, "num_steps":num_steps}
 
 
@@ -61,7 +58,6 @@ def writing_node(state):
 def saving_node(state):
     """take the finished long doc and save it to local disk as a .md file   """
     logger.info("---SAVING THE DOC---")
-    initial_prompt = state['initial_prompt']
     plan = state['plan']
     final_doc = state['final_doc']
     word_count = state['word_count']

@@ -214,3 +214,4 @@ chroma_settings.yaml
 
 #PDF files
 *.pdf
+data/

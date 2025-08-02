@@ -12,11 +12,11 @@ write_chain = write_prompt | model | StrOutputParser()
 def planning_node(state):
     """take the initial prompt and write a plan to make a long doc"""
     logger.info("---PLANNING THE WRITING---")
-    initial_prompt = state['initial_prompt']
+    # initial_prompt = state['initial_prompt']
     num_steps = int(state['num_steps'])
     num_steps += 1
-    logger.info(f"Planning writing with initial prompt: {initial_prompt}")
-    plan = plan_chain.invoke({"instructions": initial_prompt})
+    logger.info(f"Planning writing")
+    plan = plan_chain.invoke({"instructions": state['messages']})
     logger.info("Generated plan")
     return {"plan": plan, "num_steps":num_steps}
 

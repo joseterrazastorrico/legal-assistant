@@ -7,8 +7,6 @@ from agents.writing_agent.nodes import saving_node
 from langgraph.checkpoint.memory import MemorySaver
 
 checkpointer = MemorySaver()
-
-
 workflow = StateGraph(WritingState)
 
 # Add nodes
@@ -24,4 +22,4 @@ workflow.add_edge("planning_node", "writing_node")
 workflow.add_edge("writing_node", "saving_node")
 workflow.add_edge("saving_node", END)
 
-workflow = workflow.compile(checkpointer=checkpointer)
+workflow = workflow.compile(name='writing_agent', checkpointer=checkpointer)

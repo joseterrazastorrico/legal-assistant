@@ -12,10 +12,10 @@ class WritingState(TypedDict):
         llm_name: name of the LLM
         word_count: word count of the final document
     """
-    initial_prompt : str
-    plan : str
-    num_steps : int
-    final_doc : str
-    write_steps : List[str]
-    word_count : int
+    initial_prompt : str = ""
+    plan : str = None
+    final_doc : str = None
+    write_steps : List[str] = []
+    word_count : int = 0
+    num_steps : int = 4
     llm_name : str = 'GEMINI'

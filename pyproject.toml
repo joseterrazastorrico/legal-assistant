@@ -1,0 +1,333 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "legal-assistant"
+version = "0.1.0"
+description = "AI-powered legal assistant with document processing and chat interface"
+readme = "README.md"
+authors = [
+    {name = "Jose Terra", email = "joseterr@example.com"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["legal", "ai", "assistant", "rag", "langchain"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+]
+
+# Dependencias básicas compartidas por todos los ambientes
+dependencies = [
+    # Core dependencies
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0",
+    "pathlib2>=2.3.0",
+    
+    # LangChain ecosystem
+    "langchain>=0.1.0",
+    "langchain-core>=0.1.0",
+    "langchain-community>=0.0.20",
+    "langchain-google-genai>=0.0.8",
+    "langgraph>=0.0.30",
+    "langgraph-supervisor==0.0.27",
+    "langsmith>=0.4.5",
+    
+    # Vector databases
+    "chromadb>=0.4.22",
+    "faiss-cpu>=1.7.4",
+    
+    # Document processing
+    "pypdf>=4.0.0",
+    "pypdf2>=3.0.0",
+    "python-multipart>=0.0.6",
+    
+    # HTTP clients
+    "requests>=2.31.0",
+    "httpx>=0.25.0",
+    
+    # Data processing
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    
+    # Logging
+    "structlog>=23.1.0",
+    "colorlog>=6.7.0",
+
+    # Gradio interface
+    "gradio>=4.0.0",
+]
+
+[project.optional-dependencies]
+# Ambiente de desarrollo
+dev = [
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.11.0",
+    
+    # Code quality (Ruff replaces black, isort, flake8)
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+    "pre-commit>=3.3.0",
+    
+    # Documentation
+    "sphinx>=7.1.0",
+    "sphinx-rtd-theme>=1.3.0",
+    
+    # Development tools
+    "ipython>=8.14.0",
+    "jupyter>=1.0.0",
+    "notebook>=7.0.0",
+
+    
+    # Additional dev dependencies
+    "python-decouple>=3.8",
+    "rich>=13.0.0",
+]
+
+# Ambiente de QA/Testing
+qa = [
+    # Testing framework
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-xdist>=3.3.0",
+    "pytest-html>=3.2.0",
+    
+    # Code quality
+    "ruff>=0.1.0",
+    
+    # Load testing
+    "locust>=2.16.0",
+    
+    # Security scanning
+    "bandit>=1.7.5",
+    "safety>=2.3.0",
+    
+    # Performance monitoring
+    "memory-profiler>=0.60.0",
+    
+    # Gradio for UI testing
+    "gradio>=4.0.0",
+    "selenium>=4.11.0",
+]
+
+# Ambiente de producción
+prod = [
+    # Production server
+    "uvicorn[standard]>=0.23.0",
+    "gunicorn>=21.0.0",
+    
+    # Monitoring
+    "prometheus-client>=0.17.0",
+    
+    # Production Gradio
+    "gradio>=4.0.0",
+    
+    # Production logging
+    "python-json-logger>=2.0.7",
+    
+    # Security
+    "cryptography>=41.0.0",
+]
+
+# Gradio specific dependencies
+gradio = [
+    "gradio>=4.0.0",
+    "pillow>=10.0.0",
+    "matplotlib>=3.7.0",
+    "plotly>=5.15.0",
+]
+
+# All dependencies (for complete installation)
+all = [
+    "legal-assistant[dev,qa,prod,gradio]"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/joseterr/legal-assistant"
+"Bug Reports" = "https://github.com/joseterr/legal-assistant/issues"
+"Source" = "https://github.com/joseterr/legal-assistant"
+
+[project.scripts]
+legal-assistant = "legal_assistant.cli:main"
+legal-gradio = "gradio_app.app:launch"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["legal_assistant*", "agents*", "config*", "documents*", "logger*", "gradio_app*"]
+
+# ==========================================
+# RUFF CONFIGURATION (reemplaza black, isort, flake8)
+# ==========================================
+[tool.ruff]
+# Mismo line length que black
+line-length = 88
+target-version = "py39"
+
+# Directorios a incluir/excluir
+include = ["*.py", "*.pyi", "**/pyproject.toml"]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+# Seleccionar reglas (equivalente a flake8 + más)
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG001", # flake8-unused-arguments
+    "C901",   # mccabe complexity
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "TID",    # flake8-tidy-imports
+    "Q",      # flake8-quotes
+    "PGH",    # pygrep-hooks
+    "PYI",    # flake8-pyi
+    "PT",     # flake8-pytest-style
+    "RSE",    # flake8-raise
+    "RET",    # flake8-return
+    "SLF",    # flake8-self
+    "SLOT",   # flake8-slots
+    "T20",    # flake8-print
+    "PIE",    # flake8-pie
+    "COM",    # flake8-commas
+    "S",      # flake8-bandit (security)
+    "BLE",    # flake8-blind-except
+    "FBT",    # flake8-boolean-trap
+    "A",      # flake8-builtins
+    "DTZ",    # flake8-datetimez
+    "T10",    # flake8-debugger
+]
+
+# Ignorar ciertas reglas
+ignore = [
+    "E501",   # line too long (manejado por formatter)
+    "S101",   # use of assert (común en tests)
+    "S311",   # pseudo-random generators (no crítico para esta app)
+    "FBT001", # boolean positional arg (a veces necesario)
+    "FBT002", # boolean default arg (a veces necesario)
+    "COM812", # trailing comma (manejado por formatter)
+    "ISC001", # single line implicit string concatenation (conflicto con formatter)
+]
+
+# Permitir autofix para ciertas reglas
+fixable = ["ALL"]
+unfixable = []
+
+# Máxima complejidad McCabe
+mccabe.max-complexity = 10
+
+[tool.ruff.format]
+# Usar comillas dobles
+quote-style = "double"
+
+# Usar indent con 4 espacios
+indent-style = "space"
+
+# Respetar magic trailing comma
+skip-magic-trailing-comma = false
+
+# Formato de strings
+docstring-code-format = true
+
+[tool.ruff.lint.isort]
+# Configuración tipo isort
+known-first-party = ["legal_assistant", "agents", "config", "documents", "logger", "gradio_app"]
+force-single-line = false
+lines-after-imports = 2
+split-on-trailing-comma = true
+
+[tool.ruff.lint.per-file-ignores]
+# Ignorar ciertas reglas en archivos específicos
+"tests/*" = ["S101", "PLR2004", "SLF001", "TCH"]
+"__init__.py" = ["F401"]  # unused imports ok en __init__.py
+"docs/*" = ["ALL"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"  # Usar Google docstring style
+
+# ==========================================
+# MYPY CONFIGURATION
+# ==========================================
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+# ==========================================
+# PYTEST CONFIGURATION
+# ==========================================
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config --cov=legal_assistant --cov=agents --cov=config --cov=documents --cov=logger"
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+# ==========================================
+# COVERAGE CONFIGURATION
+# ==========================================
+[tool.coverage.run]
+source = ["legal_assistant", "agents", "config", "documents", "logger", "gradio_app"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/env/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+skip_covered = false
